@@ -22,3 +22,24 @@ def load_data(verbose=False):
         print ('Person test shape: {}'.format(person_test.shape))
 
     return X_train_valid, y_train_valid, X_test, y_test, person_train_valid, person_test
+
+
+#############################################################
+# Training, Validation, Test Set
+#############################################################
+def train_val_test():
+    X_train_valid, y_train_valid, X_test, y_test, person_train_valid, person_test = load_data()
+    y_train_valid -= 769
+    y_test -= 769
+    perm = np.random.permutation(X_train_valid.shape[0])
+    numTrain = int(0.8*X_train_valid.shape[0])
+    numVal = X_train_valid.shape[0] - numTrain
+    Xtrain = X_train_valid[perm[0:numTrain]]
+    ytrain = y_train_valid[perm[0:numTrain]]
+    Xval = X_train_valid[perm[numTrain: ]]
+    yval = y_train_valid[perm[numTrain: ]]
+    return Xtrain, ytrain, Xval, yval
+
+
+if __name__ == '__main__':
+    load_data(verbose=True)
