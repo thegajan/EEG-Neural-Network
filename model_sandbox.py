@@ -5,13 +5,15 @@ from keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLROnPlateau
 import numpy as np
 import matplotlib.pyplot as plt
 import time
+from utils import *
+
 
 
 def CNN2_RNN2(Xtrain, ytrain, Xval, yval, pickle_name, time):
     model = models.Sequential()
 
-    model.add(layers.Permute((2, 1), input_shape=(22, time)))
-    model.add(layers.Conv1D(32, kernel_size=5, strides=4, input_shape=(time, 22)))
+    model.add(layers.Permute((2, 1), input_shape=(22, 1000)))
+    model.add(layers.Conv1D(32, kernel_size=5, strides=4, input_shape=(1000, 22)))
     model.add(layers.BatchNormalization())
     model.add(layers.Dropout(0.5))
     model.add(layers.Activation('relu'))
@@ -19,7 +21,7 @@ def CNN2_RNN2(Xtrain, ytrain, Xval, yval, pickle_name, time):
     model.add(layers.BatchNormalization())
     model.add(layers.Dropout(0.5))
 
-    model.add(layers.Conv1D(64, kernel_size=3, strides=4, input_shape=(time, 22)))
+    model.add(layers.Conv1D(64, kernel_size=3, strides=4, input_shape=(1000, 22)))
     model.add(layers.BatchNormalization())
     model.add(layers.Dropout(0.5))
     model.add(layers.Activation('relu'))
@@ -171,9 +173,6 @@ def CNN2_FC(X_train_valid, y_train_valid, Xval, yval):
 
 if __name__ == '__main__':
     Xtrain, ytrain, Xval, yval = train_val_test()
-    Xonetrain, Xoneval, yonetrain, yoneval, Xone_test, yone_test = load_subject1()
     # RNN2(Xtrain, ytrain, Xval, yval)
-    # CNN2_RNN2(Xtrain, ytrain, Xval, yval)
+    CNN2_RNN2(Xtrain, ytrain, Xval, yval, 'test', 1000)
     # CNN2_FC(Xtrain, ytrain, Xval, yval)
-
-    #CNN2_RNN2(Xonetrain, yonetrain, Xoneval, yoneval)
