@@ -7,11 +7,11 @@ import matplotlib.pyplot as plt
 import time
 
 
-def CNN2_RNN2(X_train_valid, y_train_valid, Xval, yval):
+def CNN2_RNN1(X_train_valid, y_train_valid, Xval, yval):
     model = models.Sequential()
 
     model.add(layers.Permute((2, 1), input_shape=(22, 1000)))
-    model.add(layers.Conv1D(40, kernel_size=20, strides=4, input_shape=(1000, 22)))
+    model.add(layers.Conv1D(32, kernel_size=5, strides=4, input_shape=(1000, 22)))
     model.add(layers.BatchNormalization())
     model.add(layers.Dropout(0.5))
     model.add(layers.Activation('relu'))
@@ -19,23 +19,36 @@ def CNN2_RNN2(X_train_valid, y_train_valid, Xval, yval):
     model.add(layers.BatchNormalization())
     model.add(layers.Dropout(0.5))
 
-    model.add(layers.Conv1D(40, kernel_size=20, strides=4, input_shape=(1000, 22)))
+    model.add(layers.Conv1D(64, kernel_size=3, strides=4, input_shape=(1000, 22)))
     model.add(layers.BatchNormalization())
     model.add(layers.Dropout(0.5))
     model.add(layers.Activation('relu'))
-    model.add(layers.MaxPooling1D(pool_size=4, strides=4))
+    model.add(layers.MaxPooling1D(pool_size=2, strides=4))
+    model.add(layers.BatchNormalization())
+    model.add(layers.Dropout(0.5))
+    # model.add(layers.Conv1D(64, kernel_size=20, strides=4, input_shape=(1000, 22)))
+    # model.add(layers.BatchNormalization())
+    # model.add(layers.Dropout(0.5))
+    # model.add(layers.Activation('relu'))
+    # model.add(layers.MaxPooling1D(pool_size=4, strides=4))
+    # model.add(layers.BatchNormalization())
+    # model.add(layers.Dropout(0.5))
+
+    model.add(layers.GRU(64, return_sequences=True, stateful=False))
     model.add(layers.BatchNormalization())
     model.add(layers.Dropout(0.5))
 
-    model.add(layers.LSTM(20, return_sequences=True, stateful=False))
-    model.add(layers.BatchNormalization())
-    model.add(layers.Dropout(0.5))
+    # model.add(layers.GRU(64, return_sequences=True, stateful=False))
+    # model.add(layers.BatchNormalization())
+    # model.add(layers.Dropout(0.5))
 
-    model.add(layers.LSTM(20, return_sequences=True, stateful=False))
-    model.add(layers.BatchNormalization())
-    model.add(layers.Dropout(0.8))
+    # model.add(layers.LSTM(64, return_sequences=True, stateful=False))
+    # model.add(layers.BatchNormalization())
+    # model.add(layers.Dropout(0.5))
 
     model.add(layers.Flatten())
+    model.add(layers.BatchNormalization())
+    model.add(layers.Dropout(0.5))
     model.add(layers.Dense(4, activation='softmax'))
 
     model.compile('adam', 'sparse_categorical_crossentropy', metrics=['acc'])
@@ -43,9 +56,10 @@ def CNN2_RNN2(X_train_valid, y_train_valid, Xval, yval):
     mcp_save = ModelCheckpoint('.mdl_wts.hdf5', save_best_only=True, monitor='val_loss', mode='min')
     # reduce_lr_loss = ReduceLROnPlateau(monitor='val_loss', factor=0.1, patience=7, verbose=1, epsilon=1e-4, mode='min')
 
-    loss_hist = model.fit(Xtrain, ytrain, validation_data=(Xval, yval), epochs=1000, callbacks=[mcp_save])
+    loss_hist = model.fit(Xtrain, ytrain, validation_data=(Xval, yval), epochs=500, callbacks=[mcp_save])
     model.summary()
     hist = loss_hist.history
+
     plt.figure(figsize=(15, 7))
     plt.subplot(1, 2, 1)
     plt.plot(hist['acc'])
@@ -160,3 +174,24 @@ if __name__ == '__main__':
     # RNN2(Xtrain, ytrain, Xval, yval)
     CNN2_RNN2(Xtrain, ytrain, Xval, yval)
     # CNN2_FC(Xtrain, ytrain, Xval, yval)
+    # model = models.load_model('.mdl_wts69.hdf5')
+    # mcp_save = ModelCheckpoint('.mdl_wts.hdf5', save_best_only=True, monitor='val_loss', mode='min')
+    # loss_hist = model.fit(Xtrain, ytrain, validation_data=(Xval, yval), epochs=1000, callbacks=[mcp_save])
+    # model.summary()
+    # hist = loss_hist.history
+    # print(hist.history['val_acc'].sort(reverse = True))
+    # plt.figure(figsize=(15, 7))
+    # plt.subplot(1, 2, 1)
+    # plt.plot(hist['acc'])
+    # plt.plot(hist['val_acc'])
+    # plt.ylabel('acc')
+    # plt.xlabel('epoch')
+    # plt.legend(['train', 'val'])
+    #
+    # plt.subplot(1, 2, 2)
+    # plt.plot(hist['loss'])
+    # plt.plot(hist['val_loss'])
+    # plt.ylabel('loss')
+    # plt.xlabel('epoch')
+    # plt.legend(['train', 'val'])
+    # plt.show()
