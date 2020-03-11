@@ -41,5 +41,51 @@ def train_val_test():
     return Xtrain, ytrain, Xval, yval
 
 
+#############################################################
+# Load subject 1 data
+#############################################################
+def load_subject1():
+    # load data
+    X_train_valid, y_train_valid, X_test, y_test, person_train_valid, person_test = load_data()
+
+    Xone_train_val = []
+    yone_train_val = []
+    for i in range(len(person_train_valid)):
+        if person_train_valid[i] == 1:
+            Xone_train_val.append(X_train_valid[i])
+            yone_train_val.append(y_train_valid[i])
+    Xone_test = []
+    yone_test = []
+    for i in range(len(person_test)):
+        if person_test[i] == 1:
+            Xone_test.append(X_test[i])
+            yone_test.append(y_test[i])
+
+    Xone_train_val = np.array(Xone_train_val)
+    yone_train_val = np.array(yone_train_val)
+    Xone_test = np.array(Xone_test)
+    yone_test = np.array(yone_test)
+
+    yone_train_val -= 769
+    yone_test -= 769
+
+    perm = np.random.permutation(Xone_train_val.shape[0])
+    numTrain = int(0.8*Xone_train_val.shape[0])
+    numVal = Xone_train_val.shape[0] - numTrain
+    Xonetrain = Xone_train_val[perm[0:numTrain]]
+    yonetrain = yone_train_val[perm[0:numTrain]]
+    Xoneval = Xone_train_val[perm[numTrain: ]]
+    yoneval = yone_train_val[perm[numTrain: ]]
+
+    return Xonetrain, Xoneval, yonetrain, yoneval, Xone_test, yone_test
+
+
 if __name__ == '__main__':
     load_data(verbose=True)
+    Xone_train, Xone_val, yone_train, yone_val, Xone_test, yone_test = load_subject1()
+    print(Xone_train.shape)
+    print(Xone_val.shape)
+    print(yone_train.shape)
+    print(yone_val.shape)
+    print(Xone_test.shape)
+    print(yone_test.shape)
