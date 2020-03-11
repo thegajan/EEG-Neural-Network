@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import time
 
 
-def CNN2_RNN2(X_train_valid, y_train_valid, Xval, yval):
+def CNN2_RNN2(Xtrain, ytrain, Xval, yval, pickle_name):
     model = models.Sequential()
 
     model.add(layers.Permute((2, 1), input_shape=(22, 1000)))
@@ -40,7 +40,7 @@ def CNN2_RNN2(X_train_valid, y_train_valid, Xval, yval):
 
     model.compile('adam', 'sparse_categorical_crossentropy', metrics=['acc'])
 
-    mcp_save = ModelCheckpoint('.mdl_wts.hdf5', save_best_only=True, monitor='val_loss', mode='min')
+    mcp_save = ModelCheckpoint(pickle_name+'.hdf5', save_best_only=True, monitor='val_loss', mode='min')
     # reduce_lr_loss = ReduceLROnPlateau(monitor='val_loss', factor=0.1, patience=7, verbose=1, epsilon=1e-4, mode='min')
 
     loss_hist = model.fit(Xtrain, ytrain, validation_data=(Xval, yval), epochs=1250, callbacks=[mcp_save])
@@ -162,4 +162,4 @@ if __name__ == '__main__':
     # CNN2_RNN2(Xtrain, ytrain, Xval, yval)
     # CNN2_FC(Xtrain, ytrain, Xval, yval)
 
-    CNN2_RNN2(Xonetrain, yonetrain, Xoneval, yoneval)
+    #CNN2_RNN2(Xonetrain, yonetrain, Xoneval, yoneval)
