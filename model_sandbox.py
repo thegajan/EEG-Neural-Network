@@ -26,11 +26,11 @@ def CNN2_RNN2(X_train_valid, y_train_valid, Xval, yval):
     model.add(layers.BatchNormalization())
     model.add(layers.Dropout(0.5))
 
-    model.add(layers.LSTM(20, return_sequences=True, stateful=False))
+    model.add(layers.LSTM(64, return_sequences=True, stateful=False))
     model.add(layers.BatchNormalization())
     model.add(layers.Dropout(0.5))
 
-    model.add(layers.LSTM(20, return_sequences=True, stateful=False))
+    model.add(layers.LSTM(64, return_sequences=True, stateful=False))
     model.add(layers.BatchNormalization())
     model.add(layers.Dropout(0.8))
 
@@ -38,7 +38,7 @@ def CNN2_RNN2(X_train_valid, y_train_valid, Xval, yval):
     model.add(layers.Dense(4, activation='softmax'))
 
     model.compile('adam', 'sparse_categorical_crossentropy', metrics=['acc'])
-    loss_hist = model.fit(Xtrain, ytrain, validation_data=(Xval, yval), epochs=1000)
+    loss_hist = model.fit(Xtrain, ytrain, validation_data=(Xval, yval), epochs=500)
     model.summary()
     hist = loss_hist.history
     plt.figure(figsize=(15, 7))
@@ -61,10 +61,11 @@ def CNN2_RNN2(X_train_valid, y_train_valid, Xval, yval):
 def RNN2(X_train_valid, y_train_valid, Xval, yval):
     model = models.Sequential()
 
-    model.add(layers.LSTM(30, return_sequences=True, stateful=False))
+    model.add(layers.Permute((2, 1), input_shape=(22, 1000)))
+    model.add(layers.LSTM(64, return_sequences=True, stateful=False))
     model.add(layers.Dropout(0.5))
     model.add(layers.BatchNormalization())
-    model.add(layers.LSTM(20, return_sequences=True, stateful=False))
+    model.add(layers.LSTM(64, return_sequences=True, stateful=False))
     model.add(layers.Dropout(0.5))
     model.add(layers.BatchNormalization())
     model.add(layers.Flatten())
