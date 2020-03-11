@@ -7,11 +7,11 @@ import matplotlib.pyplot as plt
 import time
 
 
-def CNN2_RNN2(Xtrain, ytrain, Xval, yval, pickle_name):
+def CNN2_RNN2(Xtrain, ytrain, Xval, yval, pickle_name, time):
     model = models.Sequential()
 
-    model.add(layers.Permute((2, 1), input_shape=(22, 1000)))
-    model.add(layers.Conv1D(32, kernel_size=5, strides=4, input_shape=(1000, 22)))
+    model.add(layers.Permute((2, 1), input_shape=(22, time)))
+    model.add(layers.Conv1D(32, kernel_size=5, strides=4, input_shape=(time, 22)))
     model.add(layers.BatchNormalization())
     model.add(layers.Dropout(0.5))
     model.add(layers.Activation('relu'))
@@ -19,7 +19,7 @@ def CNN2_RNN2(Xtrain, ytrain, Xval, yval, pickle_name):
     model.add(layers.BatchNormalization())
     model.add(layers.Dropout(0.5))
 
-    model.add(layers.Conv1D(64, kernel_size=3, strides=4, input_shape=(1000, 22)))
+    model.add(layers.Conv1D(64, kernel_size=3, strides=4, input_shape=(time, 22)))
     model.add(layers.BatchNormalization())
     model.add(layers.Dropout(0.5))
     model.add(layers.Activation('relu'))
