@@ -1,6 +1,7 @@
 from keras import layers, models, regularizers
 from utils import train_val_test
 from keras import backend as K
+from keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLROnPlateau
 import numpy as np
 import matplotlib.pyplot as plt
 import time
@@ -26,11 +27,11 @@ def CNN2_RNN2(X_train_valid, y_train_valid, Xval, yval):
     model.add(layers.BatchNormalization())
     model.add(layers.Dropout(0.5))
 
-    model.add(layers.LSTM(64, return_sequences=True, stateful=False))
+    model.add(layers.LSTM(20, return_sequences=True, stateful=False))
     model.add(layers.BatchNormalization())
     model.add(layers.Dropout(0.5))
 
-    model.add(layers.LSTM(64, return_sequences=True, stateful=False))
+    model.add(layers.LSTM(20, return_sequences=True, stateful=False))
     model.add(layers.BatchNormalization())
     model.add(layers.Dropout(0.8))
 
@@ -38,7 +39,11 @@ def CNN2_RNN2(X_train_valid, y_train_valid, Xval, yval):
     model.add(layers.Dense(4, activation='softmax'))
 
     model.compile('adam', 'sparse_categorical_crossentropy', metrics=['acc'])
-    loss_hist = model.fit(Xtrain, ytrain, validation_data=(Xval, yval), epochs=500)
+
+    mcp_save = ModelCheckpoint('.mdl_wts.hdf5', save_best_only=True, monitor='val_loss', mode='min')
+    # reduce_lr_loss = ReduceLROnPlateau(monitor='val_loss', factor=0.1, patience=7, verbose=1, epsilon=1e-4, mode='min')
+
+    loss_hist = model.fit(Xtrain, ytrain, validation_data=(Xval, yval), epochs=1000, callbacks=[mcp_save])
     model.summary()
     hist = loss_hist.history
     plt.figure(figsize=(15, 7))
