@@ -56,7 +56,7 @@ def CNN2_RNN1(X_train_valid, y_train_valid, Xval, yval):
     mcp_save = ModelCheckpoint('.mdl_wts.hdf5', save_best_only=True, monitor='val_loss', mode='min')
     # reduce_lr_loss = ReduceLROnPlateau(monitor='val_loss', factor=0.1, patience=7, verbose=1, epsilon=1e-4, mode='min')
 
-    loss_hist = model.fit(Xtrain, ytrain, validation_data=(Xval, yval), epochs=500, callbacks=[mcp_save])
+    loss_hist = model.fit(Xtrain, ytrain, validation_data=(Xval, yval), epochs=1250, callbacks=[mcp_save])
     model.summary()
     hist = loss_hist.history
 
@@ -171,27 +171,9 @@ def CNN2_FC(X_train_valid, y_train_valid, Xval, yval):
 
 if __name__ == '__main__':
     Xtrain, ytrain, Xval, yval = train_val_test()
+    Xonetrain, Xoneval, yonetrain, yoneval, Xone_test, yone_test = load_subject1()
     # RNN2(Xtrain, ytrain, Xval, yval)
-    CNN2_RNN2(Xtrain, ytrain, Xval, yval)
+    # CNN2_RNN2(Xtrain, ytrain, Xval, yval)
     # CNN2_FC(Xtrain, ytrain, Xval, yval)
-    # model = models.load_model('.mdl_wts69.hdf5')
-    # mcp_save = ModelCheckpoint('.mdl_wts.hdf5', save_best_only=True, monitor='val_loss', mode='min')
-    # loss_hist = model.fit(Xtrain, ytrain, validation_data=(Xval, yval), epochs=1000, callbacks=[mcp_save])
-    # model.summary()
-    # hist = loss_hist.history
-    # print(hist.history['val_acc'].sort(reverse = True))
-    # plt.figure(figsize=(15, 7))
-    # plt.subplot(1, 2, 1)
-    # plt.plot(hist['acc'])
-    # plt.plot(hist['val_acc'])
-    # plt.ylabel('acc')
-    # plt.xlabel('epoch')
-    # plt.legend(['train', 'val'])
-    #
-    # plt.subplot(1, 2, 2)
-    # plt.plot(hist['loss'])
-    # plt.plot(hist['val_loss'])
-    # plt.ylabel('loss')
-    # plt.xlabel('epoch')
-    # plt.legend(['train', 'val'])
-    # plt.show()
+
+    CNN2_RNN2(Xonetrain, yonetrain, Xoneval, yoneval)
