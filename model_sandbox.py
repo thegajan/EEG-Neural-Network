@@ -36,7 +36,7 @@ def CNN2_RNN2(Xtrain, ytrain, Xval, yval, pickle_name, time):
     # model.add(layers.BatchNormalization())
     # model.add(layers.Dropout(0.5))
 
-    model.add(layers.GRU(64, return_sequences=True, stateful=False))
+    model.add(layers.LSTM(64, return_sequences=True, stateful=False))
     model.add(layers.BatchNormalization())
     model.add(layers.Dropout(0.5))
 
@@ -77,6 +77,103 @@ def CNN2_RNN2(Xtrain, ytrain, Xval, yval, pickle_name, time):
     plt.xlabel('epoch')
     plt.legend(['train', 'val'])
     plt.show()
+    return model
+
+
+def RNN(X_train_valid, y_train_valid, Xval, yval):
+    model = models.Sequential()
+
+    model.add(layers.Permute((2, 1), input_shape=(22, 1000)))
+    model.add(layers.SimpleRNN(64, return_sequences=True, stateful=False))
+    model.add(layers.Dropout(0.5))
+    model.add(layers.BatchNormalization())
+    model.add(layers.Flatten())
+    model.add(layers.Dense(4, activation='softmax'))
+
+    model.compile('adam', 'sparse_categorical_crossentropy', metrics=['acc'])
+    # model.summary()
+    loss_hist = model.fit(Xtrain, ytrain, validation_data=(Xval, yval), epochs=10)
+    hist = loss_hist.history
+    plt.figure(figsize=(15, 7))
+    plt.subplot(1, 2, 1)
+    plt.plot(hist['acc'])
+    plt.plot(hist['val_acc'])
+    plt.ylabel('acc')
+    plt.xlabel('epoch')
+    plt.legend(['train', 'val'])
+
+    plt.subplot(1, 2, 2)
+    plt.plot(hist['loss'])
+    plt.plot(hist['val_loss'])
+    plt.ylabel('loss')
+    plt.xlabel('epoch')
+    plt.legend(['train', 'val'])
+    plt.show()
+    return model
+
+
+def LSTM(X_train_valid, y_train_valid, Xval, yval):
+    model = models.Sequential()
+
+    model.add(layers.Permute((2, 1), input_shape=(22, 1000)))
+    model.add(layers.LSTM(64, return_sequences=True, stateful=False))
+    model.add(layers.Dropout(0.5))
+    model.add(layers.BatchNormalization())
+    model.add(layers.Flatten())
+    model.add(layers.Dense(4, activation='softmax'))
+
+    model.compile('adam', 'sparse_categorical_crossentropy', metrics=['acc'])
+    # model.summary()
+    loss_hist = model.fit(Xtrain, ytrain, validation_data=(Xval, yval), epochs=50)
+    hist = loss_hist.history
+    plt.figure(figsize=(15, 7))
+    plt.subplot(1, 2, 1)
+    plt.plot(hist['acc'])
+    plt.plot(hist['val_acc'])
+    plt.ylabel('acc')
+    plt.xlabel('epoch')
+    plt.legend(['train', 'val'])
+
+    plt.subplot(1, 2, 2)
+    plt.plot(hist['loss'])
+    plt.plot(hist['val_loss'])
+    plt.ylabel('loss')
+    plt.xlabel('epoch')
+    plt.legend(['train', 'val'])
+    plt.show()
+    return model
+
+
+def GRU(X_train_valid, y_train_valid, Xval, yval):
+    model = models.Sequential()
+
+    model.add(layers.Permute((2, 1), input_shape=(22, 1000)))
+    model.add(layers.GRU(64, return_sequences=True, stateful=False))
+    model.add(layers.Dropout(0.5))
+    model.add(layers.BatchNormalization())
+    model.add(layers.Flatten())
+    model.add(layers.Dense(4, activation='softmax'))
+
+    model.compile('adam', 'sparse_categorical_crossentropy', metrics=['acc'])
+    # model.summary()
+    loss_hist = model.fit(Xtrain, ytrain, validation_data=(Xval, yval), epochs=50)
+    hist = loss_hist.history
+    plt.figure(figsize=(15, 7))
+    plt.subplot(1, 2, 1)
+    plt.plot(hist['acc'])
+    plt.plot(hist['val_acc'])
+    plt.ylabel('acc')
+    plt.xlabel('epoch')
+    plt.legend(['train', 'val'])
+
+    plt.subplot(1, 2, 2)
+    plt.plot(hist['loss'])
+    plt.plot(hist['val_loss'])
+    plt.ylabel('loss')
+    plt.xlabel('epoch')
+    plt.legend(['train', 'val'])
+    plt.show()
+    return model
 
 
 def RNN2(X_train_valid, y_train_valid, Xval, yval):
@@ -173,6 +270,19 @@ def CNN2_FC(X_train_valid, y_train_valid, Xval, yval):
 
 if __name__ == '__main__':
     Xtrain, ytrain, Xval, yval = train_val_test()
-    # RNN2(Xtrain, ytrain, Xval, yval)
-    CNN2_RNN2(Xtrain, ytrain, Xval, yval, 'test', 1000)
+    # model = RNN(Xtrain, ytrain, Xval, yval)
+    # model = LSTM(Xtrain, ytrain, Xval, yval)
+    # model = GRU(Xtrain, ytrain, Xval, yval)
+    model = CNN2_RNN2(Xtrain, ytrain, Xval, yval, 'test', 1000)
     # CNN2_FC(Xtrain, ytrain, Xval, yval)
+
+    X_train_valid, y_train_valid, X_test, y_test, person_train_valid,  person_test = load_data()
+    y_test -= 769
+
+    predictions = model.predict(X_test)
+    y_predict = np.argmax(predictions, axis=1)
+    sum = 0
+    for i in range(len(y_predict)):
+        sum += (y_predict[i] == y_test[i])
+    score = sum / len(y_predict)
+    print(score)

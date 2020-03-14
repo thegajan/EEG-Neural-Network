@@ -7,8 +7,18 @@ import numpy as np
 import matplotlib.pyplot as plt
 import time
 
-def prob1a(Xonetrain, yonetrain, Xoneval, yoneval, pickle_name):
-    CNN2_RNN2(Xonetrain, yonetrain, Xoneval, yoneval, pickle_name)
+def prob1a(Xonetrain, yonetrain, Xoneval, yoneval, pickle_name, Xone_test, yone_test):
+    model = CNN2_RNN2(Xonetrain, yonetrain, Xoneval, yoneval, pickle_name, 1000)
+    predictions = model.predict(Xone_test)
+    y_predict = np.argmax(predictions, axis=1)
+
+    sum = 0
+    for i in range(len(y_predict)):
+        sum += (y_predict[i] == yone_test[i])
+    score = sum / len(y_predict)
+    print(score)
+    return score
+
 
 def prob1b(Xone_test, yone_test):
     #load generally trained model model
@@ -52,7 +62,7 @@ if __name__ == '__main__':
     y_test -= 769
     Xonetrain, Xoneval, yonetrain, yoneval, Xone_test, yone_test = load_subject1()
 
-    # prob1a(Xonetrain, yonetrain, Xoneval, yoneval, 'prob1a')
+    prob1a(Xonetrain, yonetrain, Xoneval, yoneval, 'prob1a', Xone_test, yone_test)
     print(prob1b(Xone_test, yone_test))
     print(prob2(X_test, y_test))
     # prob3(Xtrain, ytrain, Xval, yval, 'time_10', 'time_100', 'time_500', 'time_1k')
