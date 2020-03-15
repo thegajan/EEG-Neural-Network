@@ -338,7 +338,7 @@ if __name__ == '__main__':
     # model = RNN(Xtrain, ytrain, Xval, yval)
     # model = LSTM(Xtrain, ytrain, Xval, yval)
     # model = GRU(Xtrain, ytrain, Xval, yval)
-    model = CNN2_RNN2(Xtrain, ytrain, Xval, yval, 'test', 1000)
+    model = CNN2_GRU2(Xtrain, ytrain, Xval, yval, 'test', 1000)
     # model = CNN2_LSTM2(Xtrain, ytrain, Xval, yval, 'test', 1000)
     # CNN2_FC(Xtrain, ytrain, Xval, yval)
 
