@@ -7,18 +7,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import time
 
-def prob1a(Xonetrain, yonetrain, Xoneval, yoneval, pickle_name, Xone_test, yone_test):
-    model = CNN2_RNN2(Xonetrain, yonetrain, Xoneval, yoneval, pickle_name, 1000)
-    predictions = model.predict(Xone_test)
-    y_predict = np.argmax(predictions, axis=1)
-
-    sum = 0
-    for i in range(len(y_predict)):
-        sum += (y_predict[i] == yone_test[i])
-    score = sum / len(y_predict)
-    print(score)
-    return score
-
+def prob1a(Xonetrain, yonetrain, Xoneval, yoneval, pickle_name):
+    CNN2_RNN2(Xonetrain, yonetrain, Xoneval, yoneval, pickle_name)
 
 def prob1b(Xone_test, yone_test):
     #load generally trained model model
@@ -44,12 +34,13 @@ def prob2(X_test, y_test):
     return score
 
 def prob3(X_train, y_train, Xval, yval, pickle_name1, pickle_name2, pickle_name3, pickle_name4):
-    time1 = 10
-    time2 = 100
-    time3 = 500
-    CNN2_RNN2(X_train[:,:,:time1], y_train[:,:,:time1], Xval[:,:,:time1], yval[:,:,:time1], pickle_name1, time1)
-    CNN2_RNN2(X_train[:,:,:time2], y_train[:,:,:time2], Xval[:,:,:time2], yval[:,:,:time2], pickle_name2, time2)
-    CNN2_RNN2(X_train[:,:,:time3], y_train[:,:,:time3], Xval[:,:,:time3], yval[:,:,:time3], pickle_name3, time3)
+    time1 = 500
+    time2 = 650
+    time3 = 860
+    print(y_train.shape)
+    CNN2_RNN2(X_train[:,:,:time1], y_train, Xval[:,:,:time1], yval, pickle_name1, time1)
+    CNN2_RNN2(X_train[:,:,:time2], y_train, Xval[:,:,:time2], yval, pickle_name2, time2)
+    CNN2_RNN2(X_train[:,:,:time3], y_train, Xval[:,:,:time3], yval, pickle_name3, time3)
     CNN2_RNN2(X_train, y_train, Xval, yval, pickle_name4)
 
 
@@ -62,7 +53,7 @@ if __name__ == '__main__':
     y_test -= 769
     Xonetrain, Xoneval, yonetrain, yoneval, Xone_test, yone_test = load_subject1()
 
-    prob1a(Xonetrain, yonetrain, Xoneval, yoneval, 'prob1a', Xone_test, yone_test)
-    print(prob1b(Xone_test, yone_test))
-    print(prob2(X_test, y_test))
-    # prob3(Xtrain, ytrain, Xval, yval, 'time_10', 'time_100', 'time_500', 'time_1k')
+    # prob1a(Xonetrain, yonetrain, Xoneval, yoneval, 'prob1a')
+    # print(prob1b(Xone_test, yone_test))
+    # print(prob2(X_test, y_test))
+    prob3(Xtrain, ytrain, Xval, yval, 'time_10', 'time_100', 'time_500', 'time_1k')
